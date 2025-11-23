@@ -42,16 +42,16 @@ Jika berhasil akan muncul tabel: USER, PENERIMA, MITRA, PAKETBANTUAN, DISTRIBUSI
 
 ## 🌐 3. Struktur Folder Utama
 
-index.php → halaman menu utama
-config/koneksi.php → koneksi database
-public/ → css & js (Bootstrap)
-user/ → modul User
-penerima/ → modul Penerima
-mitra/ → modul Mitra
-paketbantuan/ → modul Paket Bantuan
-distribusi/ → modul Distribusi
-laporandata/ → modul Laporan Data
-dashboard/ → modul Dashboard
+1. index.php → halaman menu utama
+2. config/koneksi.php → koneksi database
+3. public/ → css & js (Bootstrap)
+4. user/ → modul User
+5. penerima/ → modul Penerima
+6. mitra/ → modul Mitra
+7. paketbantuan/ → modul Paket Bantuan
+8. distribusi/ → modul Distribusi
+9. laporandata/ → modul Laporan Data
+10. dashboard/ → modul Dashboard
 
 ---
 
