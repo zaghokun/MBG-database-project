@@ -88,14 +88,14 @@ Jika berhasil akan muncul tabel: USER, PENERIMA, MITRA, PAKETBANTUAN, DISTRIBUSI
 
 ### 📌 Saat mau mulai coding
 
-git pull
-git checkout <nama-branchmu>
+- git pull
+- git checkout <nama-branchmu>
 
 ### 📌 Setelah selesai coding
 
-git add .
-git commit -m "progress hari ini"
-git push
+- git add .
+- git commit -m "progress hari ini"
+- git push
 
 
 ### 📌 Setelah modul selesai dan siap digabung ke main
