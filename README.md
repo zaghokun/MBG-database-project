@@ -22,8 +22,8 @@ Project ini terdiri dari 6 modul data dengan hubungan antar tabel sesuai ERD.
 
 1. Pastikan XAMPP terinstal
 2. Start **Apache** dan **MySQL**
-3. Clone project ini ke htdocs: C:\xampp\htdocs\
-4. Akses project di browser: http://localhost/project-MBG-database/
+3. Clone project ini ke htdocs: C:\xampp\htdocs\project-mbg-database (jangan lupa keluarin dari MBG-databse-project biar kebaca ama apache di XAMPP)
+4. Akses project di browser: http://localhost/project-mbg-database/
 
 
 ---
@@ -122,10 +122,10 @@ git push
 ---
 
 ## 👨‍💻 Kontributor
-- Anggota zagho_kun
-- Anggota fiko
-- Anggota zerafica
-- Anggota farhan
+- Anggota 1: zagho_kun
+- Anggota 2: fiko
+- Anggota 3: zerafica
+- Anggota 4: farhan
 
 ---
 
