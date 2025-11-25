@@ -8,7 +8,7 @@ $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM USER WHERE user_id
 <html>
 <head>
     <title>Edit User</title>
-    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
 
