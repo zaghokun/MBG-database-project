@@ -7,7 +7,7 @@ include '../config/koneksi.php';
 <head>
     <meta charset="UTF-8">
     <title>Data Distribusi</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
 <body class="bg-light">
@@ -15,7 +15,11 @@ include '../config/koneksi.php';
 <div class="container mt-4">
     <h2 class="mb-4">Data Distribusi</h2>
 
-    <a href="update.php" class="btn btn-primary mb-3">+ Tambah Distribusi</a>
+    <!-- Tombol kembali ke home -->
+    <a href="../index.php" class="btn btn-secondary mb-3">← Kembali ke Home</a>
+
+    <!-- Tambah data -->
+    <a href="create.php" class="btn btn-primary mb-3">+ Tambah Distribusi</a>
 
     <div class="card">
         <div class="card-body">
@@ -41,7 +45,7 @@ include '../config/koneksi.php';
                     $query = "
                         SELECT d.*, 
                                p.nama_paket, 
-                               r.nama_lengkap, 
+                               r.nama_lengkap AS nama_penerima, 
                                m.nama_mitra
                         FROM distribusi d
                         LEFT JOIN paketbantuan p ON d.paket_id = p.paket_id
@@ -51,7 +55,7 @@ include '../config/koneksi.php';
 
                     $result = mysqli_query($conn, $query);
 
-                    while($row = mysqli_fetch_assoc($result)){
+                    while ($row = mysqli_fetch_assoc($result)) {
                         echo "
                         <tr>
                             <td>$row[distribusi_id]</td>
@@ -66,7 +70,7 @@ include '../config/koneksi.php';
                             <td>$row[catatan_petugas]</td>
 
                             <td>
-                                <a href='edit.php?id=$row[distribusi_id]' class='btn btn-warning btn-sm'>Edit</a>
+                                <a href='update.php?id=$row[distribusi_id]' class='btn btn-warning btn-sm'>Edit</a>
                                 <a href='delete.php?id=$row[distribusi_id]' class='btn btn-danger btn-sm'
                                     onclick=\"return confirm('Yakin hapus data ini?');\">
                                     Hapus
