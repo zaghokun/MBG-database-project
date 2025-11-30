@@ -10,7 +10,7 @@ if (!isset($_GET['id'])) {
 $distribusi_id = $_GET['id'];
 
 // Ambil data lama
-$data = mysqli_query($conn, "SELECT * FROM distribusi WHERE distribusi_id = '$distribusi_id'");
+$data = mysqli_query($conn, "SELECT * FROM DISTRIBUSI WHERE distribusi_id = '$distribusi_id'");
 $row = mysqli_fetch_assoc($data);
 
 if (!$row) {
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bukti_final = $row['bukti_pengiriman']; // tetap pakai yang lama
     }
 
-    $query = "UPDATE distribusi SET 
+    $query = "UPDATE DISTRIBUSI SET 
                 paket_id = '$paket_id',
                 penerima_id = '$penerima_id',
                 mitra_id = '$mitra_id',
@@ -63,8 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     mysqli_query($conn, $query);
 
-    header("Location: index.php?update=success");
-    exit;
+    if ($query) {
+        echo "<script>alert('Distribusi ditambahkan'); window.location='index.php';</script>";
+        exit;
+    } else {
+        echo "Gagal tambah paket: " . mysqli_error($conn);
+    }
 }
 
 ?>
@@ -89,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select name="paket_id" class="form-control" required>
                 <option value="">-- Pilih Paket --</option>
                 <?php
-                $paket = mysqli_query($conn, "SELECT * FROM paketbantuan");
+                $paket = mysqli_query($conn, "SELECT * FROM PAKETBANTUAN");
                 while ($p = mysqli_fetch_assoc($paket)) {
                     $selected = ($p['paket_id'] == $row['paket_id']) ? "selected" : "";
                     echo "<option value='{$p['paket_id']}' $selected>{$p['nama_paket']}</option>";
@@ -103,10 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select name="penerima_id" class="form-control" required>
                 <option value="">-- Pilih Penerima --</option>
                 <?php
-                $penerima = mysqli_query($conn, "SELECT * FROM penerima");
+                $penerima = mysqli_query($conn, "SELECT * FROM PENERIMA");
                 while ($p = mysqli_fetch_assoc($penerima)) {
                     $selected = ($p['penerima_id'] == $row['penerima_id']) ? "selected" : "";
-                    echo "<option value='{$p['penerima_id']}' $selected>{$p['nama_penerima']}</option>";
+                    echo "<option value='{$p['penerima_id']}' $selected>{$p['nama_lengkap']}</option>";
                 }
                 ?>
             </select>
@@ -117,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <select name="mitra_id" class="form-control" required>
                 <option value="">-- Pilih Mitra --</option>
                 <?php
-                $mitra = mysqli_query($conn, "SELECT * FROM mitra");
+                $mitra = mysqli_query($conn, "SELECT * FROM MITRA");
                 while ($m = mysqli_fetch_assoc($mitra)) {
                     $selected = ($m['mitra_id'] == $row['mitra_id']) ? "selected" : "";
                     echo "<option value='{$m['mitra_id']}' $selected>{$m['nama_mitra']}</option>";

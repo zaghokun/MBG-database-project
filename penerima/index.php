@@ -1,146 +1,250 @@
 <?php 
+// 1. Integrasi Koneksi Database
 include "../config/koneksi.php"; 
+
+// Fix variabel koneksi (kompatibilitas $conn vs $koneksi)
+$koneksi_db = null;
+if (isset($conn)) {
+    $koneksi_db = $conn;
+} elseif (isset($koneksi)) {
+    $koneksi_db = $koneksi;
+}
+
+if (!$koneksi_db) {
+    die("Error: Variabel koneksi database tidak ditemukan.");
+}
 ?>
+
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Penerima</title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Poppins', sans-serif;
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-        .card-header {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            padding: 20px;
-        }
-        .btn-primary-custom {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
-            color: white;
-            border: none;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-        .status-badge {
-            font-size: 0.85em;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kelola Penerima Bantuan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
+      }
     </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
 </head>
-<body>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="flex min-h-screen">
 
-<div class="container mt-5 mb-5">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> Data Penerima Bantuan</h4>
-            <a href="../index.php" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left me-1"></i> Dashboard</a>
-        </div>
-        
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between mb-3">
-                <a href="create.php" class="btn btn-primary-custom px-4 rounded-pill">
-                    <i class="bi bi-plus-circle me-1"></i> Tambah Penerima
-                </a>
-            </div>
+<aside class="w-64 shrink-0 bg-white dark:bg-background-dark border-r border-gray-200 dark:border-gray-800 flex flex-col">
+<div class="flex h-full min-h-0 flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin user avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCZIMvDY4Ui58qst3iK6mTqYTUwsmubV8ACM12lLUGkE9utV9ROV3WLgB3KGUEAPZQD9Ab1HF2nsiUKBgvLOlt5wiYBS5g6lhNqA2ZjMVVbQlOaAjXopFHTym42sOKi6OBcyz1dYRy4OKdNuQYpaoYMpCtrV1qrdWa3NnmZXUGrn5mmRjyYCzMciwf-fJgas9nJpnEOaKEQPj5lAnpoTN1Rn_FmdwkoAH3MGIpWL-pHH4QS6HwzeM5ZVpO_a8wAVMnxgFcEi2F9D1Mj");'></div>
+<div class="flex flex-col">
+<h1 class="text-gray-900 dark:text-white text-sm font-semibold leading-normal">Administrator</h1>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-normal leading-normal">Panel Admin</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary rounded" href="../index.php">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">group</span>
+<p class="text-sm font-medium leading-normal">Penerima Bantuan</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary rounded" href="../user/index.php">
+<span class="material-symbols-outlined text-xl">manage_accounts</span>
+<p class="text-sm font-medium leading-normal">Manajemen User</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary rounded" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<p class="text-sm font-medium leading-normal">Pengaturan</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary rounded" href="#">
+<span class="material-symbols-outlined text-xl">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</div>
+</aside>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center" width="5%">No</th>
-                            <th width="20%">Nama Lengkap</th>
-                            <th width="25%">Alamat</th>
-                            <th width="15%">Kategori</th>
-                            <th width="15%">Penghasilan</th>
-                            <th class="text-center" width="10%">Tanggungan</th> 
-                            <th class="text-center" width="10%">Status</th>
-                            <th class="text-center" width="10%">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    <?php
-                    $no = 1;
-                    $query = mysqli_query($conn, "SELECT * FROM PENERIMA ORDER BY penerima_id DESC");
-                    while($row = mysqli_fetch_assoc($query)){
-                    ?>
-                        <tr>
-                            <td class="text-center fw-bold text-secondary"><?= $no++ ?></td>
-                            <td>
-                                <div class="fw-bold text-dark"><?= $row['nama_lengkap'] ?></div>
-                                <small class="text-muted"><i class="bi bi-person-badge"></i> ID: <?= $row['penerima_id'] ?></small>
-                            </td>
-                            <td>
-                                <div class="text-truncate" style="max-width: 200px;"><?= $row['alamat'] ?></div>
-                                <small class="text-muted"><?= $row['kelurahan'] ?>, <?= $row['kecamatan'] ?></small>
-                            </td>
-                            <td><span class="badge bg-light text-dark border"><?= $row['kategori_penerima'] ?></span></td>
-                            <td class="fw-medium text-success">Rp <?= number_format($row['penghasilan_bulanan'],0,',','.') ?></td>
-                            
-                            <td class="text-center">
-                                <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary">
-                                    <i class="bi bi-people me-1"></i><?= $row['jumlah_tanggungan'] ?>
-                                </span>
-                            </td>
-                            
-                            <td class="text-center">
-                                <?php 
-                                if($row['status_validasi'] == 'Valid'){
-                                    echo '<span class="badge bg-success status-badge"><i class="bi bi-check-circle me-1"></i>Valid</span>';
-                                } elseif($row['status_validasi'] == 'Tidak Valid'){
-                                    echo '<span class="badge bg-danger status-badge"><i class="bi bi-x-circle me-1"></i>Ditolak</span>';
-                                } else {
-                                    echo '<span class="badge bg-warning text-dark status-badge"><i class="bi bi-hourglass-split me-1"></i>Proses</span>';
-                                }
-                                ?>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group">
-                                    <a href="update.php?id=<?= $row['penerima_id'] ?>" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a onclick="return confirm('Hapus data penerima ini?')" href="delete.php?id=<?= $row['penerima_id'] ?>" class="btn btn-sm btn-outline-danger" title="Hapus">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-                    </tbody>
-                </table>
-            </div>
-            
-            <?php if(mysqli_num_rows($query) == 0): ?>
-                <div class="text-center py-5 text-muted">
-                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                    Belum ada data penerima.
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
+<main class="flex-1 flex flex-col p-6 lg:p-8">
+<div class="w-full max-w-7xl mx-auto">
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<div class="flex flex-col gap-1">
+    <p class="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">Data Penerima Bantuan</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm">Kelola data warga penerima manfaat bantuan sosial.</p>
+</div>
+<a href="create.php" class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal shadow-sm hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+<span class="truncate">Tambah Penerima</span>
+</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="mb-4">
+<div class="flex flex-col sm:flex-row gap-4 items-center">
+<div class="flex-1 w-full">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex bg-white dark:bg-gray-800/50 items-center justify-center pl-4 rounded-l-lg border border-gray-200 dark:border-gray-700 border-r-0">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 border-l-0 text-sm font-normal leading-normal" placeholder="Cari berdasarkan nama..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex gap-3 self-start sm:self-center">
+<button class="flex h-12 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 px-4">
+<p class="text-gray-900 dark:text-white text-sm font-medium leading-normal">Kategori</p>
+<span class="material-symbols-outlined text-xl text-gray-500 dark:text-gray-400">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+
+<div class="bg-white dark:bg-background-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+<thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-gray-800/50">
+<tr>
+<th class="px-6 py-3 font-semibold" scope="col">Nama Lengkap</th>
+<th class="px-6 py-3 font-semibold" scope="col">Alamat</th>
+<th class="px-6 py-3 font-semibold" scope="col">Kategori</th>
+<th class="px-6 py-3 font-semibold" scope="col">Penghasilan</th>
+<th class="px-6 py-3 font-semibold text-center" scope="col">Tanggungan</th>
+<th class="px-6 py-3 font-semibold text-center" scope="col">Status</th>
+<th class="px-6 py-3 font-semibold text-right" scope="col">Aksi</th>
+</tr>
+</thead>
+<tbody>
+
+<?php
+// Query Database
+$query = mysqli_query($koneksi_db, "SELECT * FROM PENERIMA ORDER BY penerima_id DESC");
+
+if (mysqli_num_rows($query) > 0) {
+    while($row = mysqli_fetch_assoc($query)){
+        // Logika Status Validasi ke Tailwind Class
+        $status_validasi = $row['status_validasi'];
+        $badge_class = "";
+        $status_label = $status_validasi;
+        $icon = "";
+
+        if($status_validasi == 'Valid'){
+            $badge_class = "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+            $icon = "check_circle";
+        } elseif($status_validasi == 'Tidak Valid'){
+            $badge_class = "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+            $status_label = "Ditolak"; // Label kustom sesuai tampilan
+            $icon = "cancel";
+        } else {
+            $badge_class = "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+            $status_label = "Proses";
+            $icon = "hourglass_top";
+        }
+?>
+    <tr class="bg-white dark:bg-background-dark border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+        <td class="px-6 py-4">
+            <div class="font-medium text-gray-900 dark:text-white whitespace-nowrap"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+            <div class="text-xs text-gray-500 mt-0.5">ID: <?= $row['penerima_id'] ?></div>
+        </td>
+        <td class="px-6 py-4">
+            <div class="line-clamp-1" title="<?= htmlspecialchars($row['alamat']) ?>"><?= htmlspecialchars($row['alamat']) ?></div>
+            <div class="text-xs text-gray-500 mt-0.5">
+                <?= htmlspecialchars($row['kelurahan']) ?>, <?= htmlspecialchars($row['kecamatan']) ?>
+            </div>
+        </td>
+        <td class="px-6 py-4">
+            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                <?= htmlspecialchars($row['kategori_penerima']) ?>
+            </span>
+        </td>
+        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+            Rp <?= number_format($row['penghasilan_bulanan'], 0, ',', '.') ?>
+        </td>
+        <td class="px-6 py-4 text-center">
+            <div class="inline-flex items-center gap-1 text-gray-600 dark:text-gray-300">
+                 <span class="material-symbols-outlined text-base">groups</span>
+                 <?= $row['jumlah_tanggungan'] ?>
+            </div>
+        </td>
+        <td class="px-6 py-4 text-center">
+            <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full <?= $badge_class ?>">
+                <span class="material-symbols-outlined text-[14px]"><?= $icon ?></span>
+                <?= $status_label ?>
+            </span>
+        </td>
+        <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-2">
+                <a href="update.php?id=<?= $row['penerima_id'] ?>" class="p-2 text-gray-500 hover:text-primary dark:hover:text-primary rounded-full hover:bg-primary/10 transition-colors" title="Edit">
+                    <span class="material-symbols-outlined text-xl">edit</span>
+                </a>
+                <a href="delete.php?id=<?= $row['penerima_id'] ?>" onclick="return confirm('Hapus data penerima ini?')" class="p-2 text-gray-500 hover:text-red-500 dark:hover:text-red-500 rounded-full hover:bg-red-500/10 transition-colors" title="Hapus">
+                    <span class="material-symbols-outlined text-xl">delete</span>
+                </a>
+            </div>
+        </td>
+    </tr>
+<?php 
+    } // End While
+} else {
+?>
+    <tr>
+        <td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+            <span class="material-symbols-outlined text-4xl mb-2">folder_off</span>
+            <p>Belum ada data penerima bantuan.</p>
+        </td>
+    </tr>
+<?php } ?>
+
+</tbody>
+</table>
+</div>
+
+<nav aria-label="Table navigation" class="flex items-center justify-between p-4 border-t border-gray-200 dark:border-gray-800">
+<span class="text-sm font-normal text-gray-500 dark:text-gray-400">Menampilkan data database</span>
+<ul class="inline-flex items-center -space-x-px">
+<li>
+<a class="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">
+<span class="sr-only">Previous</span>
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</a>
+</li>
+<li>
+<a class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" href="#">
+<span class="sr-only">Next</span>
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</a>
+</li>
+</ul>
+</nav>
+
+</div>
+</div>
+</main>
+</div>
+</div>
 </body>
 </html>

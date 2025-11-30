@@ -10,7 +10,7 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 
 // Ambil data berdasarkan ID
-$query = mysqli_query($conn, "SELECT * FROM paketbantuan WHERE paket_id = '$id'");
+$query = mysqli_query($conn, "SELECT * FROM PAKETBANTUAN WHERE paket_id = '$id'");
 $data = mysqli_fetch_assoc($query);
 
 if (!$data) {
@@ -28,7 +28,7 @@ if (isset($_POST['update'])) {
     $kadaluarsa    = $_POST['kadaluarsa'];
     $kuantitas     = $_POST['kuantitas'];
 
-    $update = mysqli_query($conn, "UPDATE paketbantuan SET
+    $update = mysqli_query($conn, "UPDATE PAKETBANTUAN SET
                 nama_paket='$nama_paket',
                 deskripsi='$deskripsi',
                 jenis_bantuan='$jenis_bantuan',
@@ -40,10 +40,10 @@ if (isset($_POST['update'])) {
              ");
 
     if ($update) {
-        header("Location: index.php?msg=updated");
+        echo "<script>alert('Paket berhasil ddiupdate'); window.location='index.php';</script>";
         exit;
     } else {
-        echo "Gagal update: " . mysqli_error($conn);
+        echo "Gagal tambah paket: " . mysqli_error($conn);
     }
 }
 ?>

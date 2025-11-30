@@ -11,12 +11,12 @@ if (isset($_POST['submit'])) {
     $kadaluarsa = $_POST['kadaluarsa'];
     $kuantitas = $_POST['kuantitas'];
 
-    $insert = mysqli_query($conn, "INSERT INTO paketbantuan 
+    $insert = mysqli_query($conn, "INSERT INTO PAKETBANTUAN
         (nama_paket, deskripsi, jenis_bantuan, kalori_total, berat_total, kadaluarsa, kuantitas)
         VALUES ('$nama', '$deskripsi', '$jenis', '$kalori', '$berat', '$kadaluarsa', '$kuantitas')");
 
     if ($insert) {
-        header("Location: index.php");
+        echo "<script>alert('Paket berhasil ditambahkan'); window.location='index.php';</script>";
         exit;
     } else {
         echo "Gagal tambah paket: " . mysqli_error($conn);

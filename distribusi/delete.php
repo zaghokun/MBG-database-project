@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 $distribusi_id = $_GET['id'];
 
 // Ambil data untuk cek file
-$data = mysqli_query($conn, "SELECT bukti_pengiriman FROM distribusi WHERE distribusi_id = '$distribusi_id'");
+$data = mysqli_query($conn, "SELECT bukti_pengiriman FROM DISTRIBUSI WHERE distribusi_id = '$distribusi_id'");
 $row = mysqli_fetch_assoc($data);
 
 if ($row) {

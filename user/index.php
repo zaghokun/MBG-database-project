@@ -1,56 +1,223 @@
 <?php 
+// 1. Integrasi Koneksi Database
 include "../config/koneksi.php"; 
+
+// Fix variabel koneksi (jaga-jaga jika menggunakan $koneksi atau $conn)
+$koneksi_db = null;
+if (isset($conn)) {
+    $koneksi_db = $conn;
+} elseif (isset($koneksi)) {
+    $koneksi_db = $koneksi;
+}
+
+if (!$koneksi_db) {
+    die("Error: Variabel koneksi database tidak ditemukan.");
+}
 ?>
+
 <!DOCTYPE html>
-<html>
+<html class="light" lang="id">
 <head>
-    <title>Kelola User</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kelola Pengguna</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111418] dark:text-white/90">
+<div class="relative flex min-h-screen w-full">
+<aside class="flex w-64 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Company Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDhvYui0wQDqx6VSVSnFqtxz47_PkDTTcsHV--E9k6uV0gukkULNlKz9RUhrIxbxKZr-WP8lVtEAgC4NkYDu4Ib9yJ1b5CcsPO7gX__0CcDP7t57HnBABa-swpjOzk5dHVOP-7NtCtQbBXU_pU2UyEoUolQDv441TkuImK0HnOw4tikW_cUsDsRymSFPdgyKLGN9cRKiEyxGi9avz2JY8-FuyIdaoQQr8lpFa1UehIPJt-J0s0g4C8onbgxrwQt-CpIb4paX2TS0wnB");'></div>
+<div class="flex flex-col">
+<h1 class="text-[#111418] dark:text-white/90 text-base font-medium leading-normal">Admin Panel</h1>
+<p class="text-[#617589] dark:text-slate-400 text-sm font-normal leading-normal">Manajemen Sistem</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="../index.php">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="../mitra/index.php">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Data Mitra</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">manage_accounts</span>
+<p class="text-sm font-medium leading-normal">Kelola Pengguna</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Laporan</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Pengaturan</p>
+</a>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<p class="text-sm font-medium leading-normal">Bantuan</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Keluar</p>
+</a>
+</div>
+</aside>
 
-<div class="container mt-5">
-    <h3 class="text-center mb-4">Data User</h3>
-    <a href="create.php" class="btn btn-primary mb-3">+ Tambah User</a>
-    <a href="../index.php" class="btn btn-secondary mb-3">Kembali</a>
-
-    <table class="table table-bordered table-hover">
-        <thead class="table-primary text-center">
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>No HP</th>
-                <th>Status Akun</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        <?php
-        $no = 1;
-        $query = mysqli_query($conn, "SELECT * FROM USER ORDER BY user_id DESC");
-        while($row = mysqli_fetch_assoc($query)){
-        ?>
-            <tr>
-                <td class="text-center"><?= $no++ ?></td>
-                <td><?= $row['nama'] ?></td>
-                <td><?= $row['email'] ?></td>
-                <td><?= $row['role'] ?></td>
-                <td><?= $row['no_hp'] ?></td>
-                <td><?= $row['status_akun'] ?></td>
-                <td class="text-center">
-                    <a href="update.php?id=<?= $row['user_id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                    <a onclick="return confirm('Hapus user ini?')" href="delete.php?id=<?= $row['user_id'] ?>" class="btn btn-danger btn-sm">Hapus</a>
-                </td>
-            </tr>
-        <?php } ?>
-
-        </tbody>
-    </table>
+<main class="flex-1 flex-col p-6 lg:p-8">
+<div class="flex flex-col w-full max-w-7xl mx-auto">
+<div class="flex flex-wrap gap-2 mb-4">
+<a class="text-[#617589] dark:text-slate-400 text-sm font-medium leading-normal hover:text-primary" href="../index.php">Dashboard</a>
+<span class="text-[#617589] dark:text-slate-500 text-sm font-medium leading-normal">/</span>
+<span class="text-[#111418] dark:text-white/90 text-sm font-medium leading-normal">Kelola Pengguna</span>
 </div>
 
-<script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-[#111418] dark:text-white text-3xl font-bold leading-tight tracking-tight">Kelola Pengguna</h1>
+<p class="text-[#617589] dark:text-slate-400 text-base font-normal leading-normal">Atur dan kelola akses pengguna untuk sistem.</p>
+</div>
+<a href="create.php" class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Tambah Pengguna</span>
+</a>
+</div>
+
+<div class="bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+<div class="px-2 py-3">
+<label class="flex flex-col h-12 w-full max-w-md">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-[#617589] dark:text-slate-400 flex bg-background-light dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-[#111418] dark:text-white/90 focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-background-light dark:bg-slate-800 h-full placeholder:text-[#617589] dark:placeholder:text-slate-500 px-4 text-sm font-normal leading-normal" placeholder="Cari berdasarkan nama atau email" value=""/>
+</div>
+</label>
+</div>
+
+<div class="px-2 py-3 @container">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-b-slate-200 dark:border-b-slate-800">
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Nama</th>
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Email</th>
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Peran</th>
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">No HP</th>
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Status Akun</th>
+<th class="px-4 py-3 text-left text-[#617589] dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Aksi</th>
+</tr>
+</thead>
+<tbody>
+
+<?php
+// QUERY PHP MENGGANTIKAN DATA STATIS
+$query = mysqli_query($koneksi_db, "SELECT * FROM USER ORDER BY user_id DESC");
+
+if (mysqli_num_rows($query) > 0) {
+    while($row = mysqli_fetch_assoc($query)){
+        // Logika untuk warna badge status
+        $status_lower = strtolower($row['status_akun']);
+        if ($status_lower == 'aktif') {
+            $badge_class = 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+        } else {
+            $badge_class = 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300';
+        }
+?>
+    <tr class="border-b border-b-slate-200 dark:border-b-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+        <td class="h-[72px] px-4 py-2 text-[#111418] dark:text-white/90 text-sm font-medium leading-normal">
+            <?= htmlspecialchars($row['nama']) ?>
+        </td>
+        <td class="h-[72px] px-4 py-2 text-[#617589] dark:text-slate-400 text-sm font-normal leading-normal">
+            <?= htmlspecialchars($row['email']) ?>
+        </td>
+        <td class="h-[72px] px-4 py-2 text-[#617589] dark:text-slate-400 text-sm font-normal leading-normal">
+            <?= htmlspecialchars($row['role']) ?>
+        </td>
+        <td class="h-[72px] px-4 py-2 text-[#617589] dark:text-slate-400 text-sm font-normal leading-normal">
+            <?= htmlspecialchars($row['no_hp']) ?>
+        </td>
+        <td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold <?= $badge_class ?>">
+                <?= htmlspecialchars($row['status_akun']) ?>
+            </span>
+        </td>
+        <td class="h-[72px] px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em]">
+            <div class="flex items-center gap-2">
+                <a href="update.php?id=<?= $row['user_id'] ?>" class="flex h-8 w-8 items-center justify-center rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-primary dark:hover:text-primary transition-colors" title="Edit">
+                    <span class="material-symbols-outlined text-base">edit</span>
+                </a>
+                <a href="delete.php?id=<?= $row['user_id'] ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus user <?= htmlspecialchars($row['nama']) ?>?')" class="flex h-8 w-8 items-center justify-center rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-red-500 transition-colors" title="Hapus">
+                    <span class="material-symbols-outlined text-base">delete</span>
+                </a>
+            </div>
+        </td>
+    </tr>
+<?php 
+    } // End While
+} else {
+?>
+    <tr>
+        <td colspan="6" class="text-center py-8 text-slate-500">
+            Data pengguna belum tersedia.
+        </td>
+    </tr>
+<?php } ?>
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="flex items-center justify-between mt-6 px-2">
+<p class="text-sm text-[#617589] dark:text-slate-400">Menampilkan hasil dari database</p>
+<div class="flex items-center gap-2">
+<button class="flex h-9 min-w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm font-medium text-[#617589] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled="">Sebelumnya</button>
+<button class="flex h-9 min-w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm font-medium text-[#617589] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Berikutnya</button>
+</div>
+</div>
+</div>
+</main>
+</div>
 </body>
 </html>

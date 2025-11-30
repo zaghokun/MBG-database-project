@@ -1,12 +1,9 @@
 <?php
-$host = "localhost";
+$host = "mariadb"; // nama service, bukan localhost
 $user = "root";
-$pass = "";
+$pass = "rootpassword";
 $db   = "db_mbg";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
-
-if (!$conn) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
-}
 ?>
+
