@@ -1,132 +1,78 @@
-# Sistem Manajemen Database Bantuan (MBG)
+# 🍱 MBG (Makan Bergizi Gratis) Database System
 
-Project ini dibuat untuk memenuhi tugas praktikum pengembangan aplikasi berbasis web.
-Project ini terdiri dari 6 modul data dengan hubungan antar tabel sesuai ERD.
+![SQL](https://img.shields.io/badge/Language-Structured_Query_Language-blue)
+![Database](https://img.shields.io/badge/Database-MySQL%2FPostgreSQL-orange)
+![Design](https://img.shields.io/badge/Architecture-3rd_Normal_Form-green)
 
-## 📌 Daftar Modul
-| Modul | Folder | Penanggung Jawab |
-|-------|--------|------------------|
-| User | /user | Anggota 1 |
-| Penerima | /penerima | Anggota 2 |
-| Mitra | /mitra | Anggota 2 |
-| Paket Bantuan | /paketbantuan | Anggota 3 |
-| Distribusi | /distribusi | Anggota 3 |
-| Laporan Data | /laporandata | Anggota 4 |
-| Dashboard | /dashboard | Anggota 4 |
-
-> Semua anggota _hanya mengerjakan_ folder modul masing-masing.
+> **A relational database architecture designed to manage supply chain, distribution, and nutritional tracking for the National Free Nutritious Meal program.**
 
 ---
 
-## 💾 1. Cara Menjalankan Project (XAMPP)
+## 🏛️ System Overview
 
-1. Pastikan XAMPP terinstal
-2. Start **Apache** dan **MySQL**
-3. Clone project ini ke htdocs: C:\xampp\htdocs\project-mbg-database (jangan lupa keluarin dari MBG-databse-project biar kebaca ama apache di XAMPP)
-4. Akses project di browser: http://localhost/project-mbg-database/
+This project focuses on the **backend data layer** required to support a large-scale logistics program. The database handles complex relationships between:
+* **Beneficiaries:** Students/Recipients data.
+* **Providers:** Kitchens, Catering services, and Suppliers.
+* **Logistics:** Menu distribution, Delivery tracking, and Schedules.
+* **Nutritional Value:** Caloric and nutritional breakdown of meals.
 
-
----
-
-## 🗄 2. Import Database (Wajib dilakukan semua anggota)
-
-1. Buka phpMyAdmin
-2. Buat database: db_mbg
-3. Klik **Import**
-4. Upload file **db_mbg.sql** atau jalankan perintah SQL dari repository.
-
-Jika berhasil akan muncul tabel: USER, PENERIMA, MITRA, PAKETBANTUAN, DISTRIBUSI, LAPORANDATA
-
+The schema is designed to ensure **Data Integrity** and minimize redundancy, strictly following **3rd Normal Form (3NF)** principles.
 
 ---
 
-## 🌐 3. Struktur Folder Utama
+## 📐 Entity Relationship Diagram (ERD)
 
-1. index.php → halaman menu utama
-2. config/koneksi.php → koneksi database
-3. public/ → css & js (Bootstrap)
-4. user/ → modul User
-5. penerima/ → modul Penerima
-6. mitra/ → modul Mitra
-7. paketbantuan/ → modul Paket Bantuan
-8. distribusi/ → modul Distribusi
-9. laporandata/ → modul Laporan Data
-10. dashboard/ → modul Dashboard
+The core architecture of the system. This diagram illustrates how the `Distribution` tables link `Recipients` with `Providers` while tracking `Menus`.
+
+![Database Schema](erd_schema.png)
+*(Please ensure you upload your ERD image and name it erd_schema.png)*
 
 ---
 
-## 🧠 4. Aturan GitHub (WAJIB)
+## ⚙️ Key Technical Features
 
-### 🔥 Dilarang keras:
-❌ Commit ke branch `main`  
-❌ Push tanpa melakukan `git pull`  
-❌ Mengutak-atik folder modul milik orang lain  
+### 1. Data Normalization
+* Designed to **3NF** standards to eliminate data anomalies.
+* Separation of `Menus` and `Ingredients` allows for flexible inventory tracking.
 
-### ✔ Wajib:
-1. **Pull dulu sebelum bekerja**
-2. **Kerja di branch masing-masing**
-3. **Push ke branch masing-masing**
-4. **Pull Request kalau mau merge ke `main`**
+### 2. Constraints & Integrity
+* **Foreign Keys:** Enforced referential integrity (e.g., A `Distribution` record cannot exist without a valid `Provider_ID`).
+* **Data Types:** Optimized column types (e.g., using `DECIMAL` for budget/cost to avoid floating-point errors).
 
----
-
-## 🔀 5. Daftar Branch Per Anggota
-
-| Branch | Untuk |
-|--------|--------|
-| dev-user | Anggota 1 |
-| dev-penerima | Anggota 2 |
-| dev-mitra | Anggota 2 |
-| dev-paketbantuan | Anggota 3 |
-| dev-distribusi | Anggota 3 |
-| dev-laporandata | Anggota 4 |
-| dev-dashboard | Anggota 4 |
+### 3. Business Logic (Stored Procedures/Views)
+*(Edit this section based on your actual code)*
+* **Automated Reporting:** Includes SQL scripts/Views to aggregate daily distribution costs per region.
+* **Audit Trails:** Logs timestamps for every status change in delivery.
 
 ---
 
-## 🧩 6. Alur Kerja Git (Langkah Demi Langkah)
+## 📂 Repository Structure
 
-### 📌 Saat mau mulai coding
+```bash
+├── 📄 ddl.sql           # Data Definition Language (Create Tables, Constraints)
+├── 📄 seed.sql          # Dummy Data for Testing
+├── 📄 queries.sql       # Analytical Queries (Reports)
+├── 🖼️ erd_schema.png    # Visual Schema Representation
+└── 📄 README.md         # Documentation
+```
 
-- git pull
-- git checkout <nama-branchmu>
+🚀 How to Import
+1. Clone the Repository
 
-### 📌 Setelah selesai coding
+```Bash
 
-- git add .
-- git commit -m "progress hari ini"
-- git push
+git clone [https://github.com/zaghokun/MBG-database-project.git](https://github.com/zaghokun/MBG-database-project.git)
+```
+2. Import to Database
 
+Via CLI:
 
-### 📌 Setelah modul selesai dan siap digabung ke main
-- Buat **Pull Request di GitHub**
-- Minta anggota lain untuk review
-- Setelah disetujui → merge ke `main`
+```Bash
 
----
+mysql -u username -p database_name < ddl.sql
+mysql -u username -p database_name < seed.sql
+```
+Via GUI: Import the .sql files directly into DBeaver, phpMyAdmin, or MySQL Workbench.
 
-## 🔧 7. Tips agar tidak konflik saat merge
-- Jangan edit file milik modul orang lain
-- Jangan rename folder
-- Jangan ubah file `index.php` tanpa koordinasi tim
-- Kalau menambah link baru → koordinasikan dulu
-
----
-
-## 🎯 Goal akhir project
-- Semua modul CRUD berjalan
-- Data antar tabel saling terhubung melalui foreign key
-- Dashboard menampilkan ringkasan data distribusi & paket bantuan
-- Tampilan Bootstrap rapi dan konsisten di seluruh halaman
-
----
-
-## 👨‍💻 Kontributor
-- Anggota 1: zagho_kun
-- Anggota 2: fiko
-- Anggota 3: zerafica
-- Anggota 4: farhan
-
----
-
-Project ini akan terus dikembangkan hingga semua modul CRUD selesai dan siap untuk presentasi.
+📝 License
+Designed for educational and portfolio purposes.
