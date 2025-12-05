@@ -1,78 +1,126 @@
-# 🍱 MBG (Makan Bergizi Gratis) Database System
+# 🍱 MBG (Makan Bergizi Gratis) Logistics Database
 
-![SQL](https://img.shields.io/badge/Language-Structured_Query_Language-blue)
-![Database](https://img.shields.io/badge/Database-MySQL%2FPostgreSQL-orange)
-![Design](https://img.shields.io/badge/Architecture-3rd_Normal_Form-green)
+![MySQL](https://img.shields.io/badge/Database-MySQL%208.0-blue)
+![Architecture](https://img.shields.io/badge/Design-3rd%20Normal%20Form-green)
+![Sector](https://img.shields.io/badge/Sector-Public%20Health%20%26%20Logistics-red)
 
-> **A relational database architecture designed to manage supply chain, distribution, and nutritional tracking for the National Free Nutritious Meal program.**
+> **Sistem manajemen basis data relasional untuk mendukung rantai pasok (supply chain) Program Makan Bergizi Gratis Nasional.**
 
 ---
 
-## 🏛️ System Overview
+## 🏛️ Project Overview
 
-This project focuses on the **backend data layer** required to support a large-scale logistics program. The database handles complex relationships between:
-* **Beneficiaries:** Students/Recipients data.
-* **Providers:** Kitchens, Catering services, and Suppliers.
-* **Logistics:** Menu distribution, Delivery tracking, and Schedules.
-* **Nutritional Value:** Caloric and nutritional breakdown of meals.
+Proyek ini merancang arsitektur backend database untuk mengelola logistik program bantuan pangan skala besar. Tantangan utama dalam sistem ini adalah memastikan **integritas data** antara:
+1.  **Penerima Manfaat:** Validasi data siswa/masyarakat rentan.
+2.  **Mitra Penyedia:** Manajemen dapur umum dan jasa katering.
+3.  **Distribusi:** Pelacakan paket bantuan secara real-time.
 
-The schema is designed to ensure **Data Integrity** and minimize redundancy, strictly following **3rd Normal Form (3NF)** principles.
+Skema database dirancang mengikuti standar **3rd Normal Form (3NF)** untuk meminimalkan redundansi dan menjaga akurasi pelaporan gizi.
 
 ---
 
 ## 📐 Entity Relationship Diagram (ERD)
 
-The core architecture of the system. This diagram illustrates how the `Distribution` tables link `Recipients` with `Providers` while tracking `Menus`.
+Diagram di bawah ini menggambarkan arsitektur relasi antar tabel. Sistem menggunakan pendekatan terpusat di tabel `USER` untuk autentikasi, yang bercabang ke profil `MITRA` dan `PENERIMA`.
 
-![Database Schema](erd_schema.png)
-*(Please ensure you upload your ERD image and name it erd_schema.png)*
+```mermaid
+erDiagram
+    USER ||--o{ PENERIMA : "memiliki profil"
+    USER ||--o{ MITRA : "memiliki profil"
+    
+    PENERIMA ||--o{ DISTRIBUSI : "menerima"
+    MITRA ||--o{ DISTRIBUSI : "mengirim"
+    PAKETBANTUAN ||--o{ DISTRIBUSI : "berisi"
+    
+    DISTRIBUSI ||--o{ LAPORANDATA : "dilaporkan"
 
----
+    USER {
+        int user_id PK
+        string role "Admin/Mitra/Penerima"
+        string email
+    }
+    
+    PENERIMA {
+        int penerima_id PK
+        string status_validasi
+        int penghasilan_bulanan
+        string kecamatan
+    }
 
-## ⚙️ Key Technical Features
+    MITRA {
+        int mitra_id PK
+        string wilayah_operasional
+        int kapasitas_harian
+    }
 
-### 1. Data Normalization
-* Designed to **3NF** standards to eliminate data anomalies.
-* Separation of `Menus` and `Ingredients` allows for flexible inventory tracking.
+    PAKETBANTUAN {
+        int paket_id PK
+        int kalori_total
+        date kadaluarsa
+    }
 
-### 2. Constraints & Integrity
-* **Foreign Keys:** Enforced referential integrity (e.g., A `Distribution` record cannot exist without a valid `Provider_ID`).
-* **Data Types:** Optimized column types (e.g., using `DECIMAL` for budget/cost to avoid floating-point errors).
-
-### 3. Business Logic (Stored Procedures/Views)
-*(Edit this section based on your actual code)*
-* **Automated Reporting:** Includes SQL scripts/Views to aggregate daily distribution costs per region.
-* **Audit Trails:** Logs timestamps for every status change in delivery.
-
----
-
-## 📂 Repository Structure
-
-```bash
-├── 📄 ddl.sql           # Data Definition Language (Create Tables, Constraints)
-├── 📄 seed.sql          # Dummy Data for Testing
-├── 📄 queries.sql       # Analytical Queries (Reports)
-├── 🖼️ erd_schema.png    # Visual Schema Representation
-└── 📄 README.md         # Documentation
+    DISTRIBUSI {
+        int distribusi_id PK
+        date tanggal_kirim
+        string status_pengiriman
+    }
 ```
+⚙️ Key Architectural Decisions
+1. Centralized Authentication (RBAC)
+Menggunakan tabel USER sebagai entitas induk (Parent).
+
+Role-Based Access Control: Kolom role memisahkan hak akses logic.
+
+Scalability: Memisahkan data login (email, password) dari data profil spesifik (kapasitas_harian, penghasilan), memungkinkan penambahan tipe user baru di masa depan tanpa merusak struktur tabel utama.
+
+2. Supply Chain Tracking (Fact Table)
+Tabel DISTRIBUSI bertindak sebagai tabel transaksi pusat yang merekam:
+
+Source: Siapa yang mengirim (mitra_id).
+
+Destination: Siapa yang menerima (penerima_id).
+
+Item: Apa isinya (paket_id).
+
+Status: Posisi paket saat ini (status_pengiriman).
+
+3. Data Integrity & Validation
+Foreign Keys: Semua relasi dijaga ketat dengan Referential Integrity untuk mencegah orphan records (data sampah yang tidak memiliki induk).
+
+Audit Trail: Tabel LAPORANDATA disiapkan terpisah dari tabel transaksi untuk menampung log masalah/keluhan, menjaga tabel DISTRIBUSI tetap ramping dan cepat diakses.
 
 🚀 How to Import
-1. Clone the Repository
-
+Option 1: Command Line (CLI)
 ```Bash
 
-git clone [https://github.com/zaghokun/MBG-database-project.git](https://github.com/zaghokun/MBG-database-project.git)
+# Login ke MySQL
+mysql -u root -p
 ```
-2. Import to Database
 
-Via CLI:
-
-```Bash
-
-mysql -u username -p database_name < ddl.sql
-mysql -u username -p database_name < seed.sql
+```# Buat Database
+CREATE DATABASE db_mbg;
+USE db_mbg;
 ```
-Via GUI: Import the .sql files directly into DBeaver, phpMyAdmin, or MySQL Workbench.
+```# Import Schema
+SOURCE /path/to/db_mbg.sql;
+```
+Option 2: GUI (DBeaver / Workbench)
 
-📝 License
-Designed for educational and portfolio purposes.
+1. Buka aplikasi SQL Client Anda.
+
+2. Buat koneksi baru ke database local.
+
+3. Klik kanan pada database -> Execute SQL Script -> Pilih db_mbg.sql.
+
+📊 Sample Analytics
+Cuplikan query dari queries.sql untuk memantau performa mitra:
+SELECT 
+    m.nama_mitra,
+    m.wilayah_operasional,
+    COUNT(d.distribusi_id) as total_paket_terkirim,
+    SUM(p.kalori_total) as total_kalori_disalurkan
+FROM MITRA m
+JOIN DISTRIBUSI d ON m.mitra_id = d.mitra_id
+JOIN PAKETBANTUAN p ON d.paket_id = p.paket_id
+WHERE d.status_pengiriman = 'Diterima'
+GROUP BY m.mitra_id;
