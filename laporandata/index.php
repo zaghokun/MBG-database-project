@@ -70,25 +70,37 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#137fec",
-            "background-light": "#f6f7f8",
-            "background-dark": "#101922",
-          },
-          fontFamily: {
-            "display": ["Inter", "sans-serif"]
-          },
-        },
-      },
-    }
-</script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
 <style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-</style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
 <div class="relative flex min-h-screen w-full flex-col group/design-root">
@@ -127,6 +139,10 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
         <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../distribusi/index.php">
             <span class="material-symbols-outlined">local_shipping</span>
             <p class="text-sm font-medium">Distribusi</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../laporandata/index.php">
+            <span class="material-symbols-outlined">description</span>
+            <p class="text-sm font-medium">Laporan Data</p>
         </a>
     </nav>
     <button class="flex items-center justify-center rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 text-sm font-bold">

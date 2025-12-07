@@ -59,47 +59,48 @@ if (!$koneksi_db) {
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-[#111418] dark:text-white/90">
 <div class="relative flex min-h-screen w-full">
-<aside class="flex w-64 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4">
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Company Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDhvYui0wQDqx6VSVSnFqtxz47_PkDTTcsHV--E9k6uV0gukkULNlKz9RUhrIxbxKZr-WP8lVtEAgC4NkYDu4Ib9yJ1b5CcsPO7gX__0CcDP7t57HnBABa-swpjOzk5dHVOP-7NtCtQbBXU_pU2UyEoUolQDv441TkuImK0HnOw4tikW_cUsDsRymSFPdgyKLGN9cRKiEyxGi9avz2JY8-FuyIdaoQQr8lpFa1UehIPJt-J0s0g4C8onbgxrwQt-CpIb4paX2TS0wnB");'></div>
-<div class="flex flex-col">
-<h1 class="text-[#111418] dark:text-white/90 text-base font-medium leading-normal">Admin Panel</h1>
-<p class="text-[#617589] dark:text-slate-400 text-sm font-normal leading-normal">Manajemen Sistem</p>
-</div>
-</div>
-<div class="flex flex-col gap-2 mt-4">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="../index.php">
-<span class="material-symbols-outlined">dashboard</span>
-<p class="text-sm font-medium leading-normal">Dashboard</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="../mitra/index.php">
-<span class="material-symbols-outlined">group</span>
-<p class="text-sm font-medium leading-normal">Data Mitra</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">manage_accounts</span>
-<p class="text-sm font-medium leading-normal">Kelola Pengguna</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
-<span class="material-symbols-outlined">bar_chart</span>
-<p class="text-sm font-medium leading-normal">Laporan</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
-<span class="material-symbols-outlined">settings</span>
-<p class="text-sm font-medium leading-normal">Pengaturan</p>
-</a>
-</div>
-</div>
-<div class="mt-auto flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
-<span class="material-symbols-outlined">help_outline</span>
-<p class="text-sm font-medium leading-normal">Bantuan</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
-<span class="material-symbols-outlined">logout</span>
-<p class="text-sm font-medium leading-normal">Keluar</p>
-</a>
+<aside class="flex flex-col w-64 bg-white dark:bg-background-dark dark:border-r dark:border-gray-800 p-4 shrink-0 hidden lg:flex">
+<div class="flex flex-col gap-4 h-full">
+    <div class="flex items-center gap-3 px-2">
+        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAxeuKUAQ_wskUxkEhnVs4z8j0aP1OtXvQ1P59r98qnhl-1npCmvnvR1x1KNUhTq_w8_FC6paJSnh8jyzUj8jWITi4ppZLLXP_iNUSvXZsBl3hPyf-0gwn0w8F4hMbsGv1bSa1Plg_NF2Kc3y2Oitzr_s41azmgiSu02N1jUw-MBAwrqU2d9V-o2mFMzJdEFD8bjW8Z9xFly3O5PXPjzy3SZmsO5ZSaRFJv9Hy0Jbj-vPKMqXXMwR01IXDWQzU058HaxLSuXwCz5dJt');"></div>
+        <div class="flex flex-col">
+            <h1 class="text-[#111418] dark:text-white text-base font-medium">Administrator</h1>
+            <p class="text-[#617589] dark:text-gray-400 text-sm">admin@portal.com</p>
+        </div>
+    </div>
+    <nav class="flex flex-col gap-2 mt-4 flex-grow">
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20" href="../index.php">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+            <p class="text-sm font-medium">Dashboard</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../mitra/index.php">
+            <span class="material-symbols-outlined">handshake</span>
+            <p class="text-sm font-medium">Mitra</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../user/index.php">
+            <span class="material-symbols-outlined">person</span>
+            <p class="text-sm font-medium">Pengguna</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../penerima/index.php">
+            <span class="material-symbols-outlined">groups</span>
+            <p class="text-sm font-medium">Penerima</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../paketbantuan/index.php">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <p class="text-sm font-medium">Paket Bantuan</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../distribusi/index.php">
+            <span class="material-symbols-outlined">local_shipping</span>
+            <p class="text-sm font-medium">Distribusi</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../laporandata/index.php">
+            <span class="material-symbols-outlined">description</span>
+            <p class="text-sm font-medium">Laporan Data</p>
+        </a>
+    </nav>
+    <button class="flex items-center justify-center rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 text-sm font-bold">
+        <span class="material-symbols-outlined mr-2">logout</span> Logout
+    </button>
 </div>
 </aside>
 
