@@ -25,45 +25,89 @@ Diagram di bawah ini menggambarkan arsitektur relasi antar tabel. Sistem menggun
 
 ```mermaid
 erDiagram
-    USER ||--o{ PENERIMA : "memiliki profil"
-    USER ||--o{ MITRA : "memiliki profil"
-    
-    PENERIMA ||--o{ DISTRIBUSI : "menerima"
-    MITRA ||--o{ DISTRIBUSI : "mengirim"
-    PAKETBANTUAN ||--o{ DISTRIBUSI : "berisi"
-    
-    DISTRIBUSI ||--o{ LAPORANDATA : "dilaporkan"
-
+    %% --- DATA MASTER USER ---
     USER {
         int user_id PK
-        string role "Admin/Mitra/Penerima"
+        string nama
         string email
+        string password
+        string role
+        string status_akun
     }
-    
+
+    %% --- DATA MASTER PIHAK TERKAIT ---
     PENERIMA {
         int penerima_id PK
+        int user_id FK
+        string nama_lengkap
+        string alamat
+        string kategori_penerima
         string status_validasi
-        int penghasilan_bulanan
-        string kecamatan
     }
 
     MITRA {
         int mitra_id PK
+        int user_id FK
+        string nama_mitra
+        string jenis_mitra
         string wilayah_operasional
-        int kapasitas_harian
+    }
+
+    %% --- DATA INVENTORY & PRODUK ---
+    ITEM {
+        int item_id PK "Barang Mentah"
+        string nama_item
+        string satuan
+        int stok_gudang
     }
 
     PAKETBANTUAN {
-        int paket_id PK
-        int kalori_total
-        date kadaluarsa
+        int paket_id PK "Produk Jadi"
+        string nama_paket
+        string jenis_bantuan
+        int kuantitas "Stok Paket Jadi"
     }
 
+    DETAIL_PAKET {
+        int detail_id PK "Junction Table"
+        int paket_id FK
+        int item_id FK
+        int jumlah_per_paket
+    }
+
+    %% --- DATA TRANSAKSI ---
     DISTRIBUSI {
         int distribusi_id PK
+        int paket_id FK
+        int penerima_id FK
+        int mitra_id FK
         date tanggal_kirim
         string status_pengiriman
     }
+
+    LAPORANDATA {
+        int laporan_id PK
+        int distribusi_id FK
+        int dibuat_oleh FK
+        string status_laporan
+    }
+
+    %% --- RELASI 1 to MANY (1 User mengelola Banyak Data) ---
+    USER ||--o{ PENERIMA : "1 to N (memverifikasi)"
+    USER ||--o{ MITRA : "1 to N (mengelola)"
+    USER ||--o{ LAPORANDATA : "1 to N (membuat)"
+    
+    %% --- RELASI 1 to MANY (Transaksi Distribusi) ---
+    PENERIMA ||--o{ DISTRIBUSI : "1 to N (menerima)"
+    MITRA ||--o{ DISTRIBUSI : "1 to N (mengirim)"
+    PAKETBANTUAN ||--o{ DISTRIBUSI : "1 to N (didistribusikan)"
+    
+    %% --- RELASI 1 to MANY (Laporan) ---
+    DISTRIBUSI ||--o{ LAPORANDATA : "1 to N (dilaporkan)"
+
+    %% --- RELASI MANY to MANY (Dipecah via DETAIL_PAKET) ---
+    PAKETBANTUAN ||--|{ DETAIL_PAKET : "1 to N (terdiri dari)"
+    ITEM ||--|{ DETAIL_PAKET : "1 to N (digunakan di)"
 ```
 ⚙️ Key Architectural Decisions
 1. Centralized Authentication (RBAC)
