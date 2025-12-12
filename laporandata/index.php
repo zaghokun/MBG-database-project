@@ -17,12 +17,11 @@ if (!$koneksi_db) {
 // --- LOGIKA BACKEND (KPI & CHART) ---
 
 // 1. Ambil KPI (Card Atas)
-// Menggunakan null coalescing operator (?? 0) untuk mencegah error jika data kosong
 $total_penerima = mysqli_fetch_row(mysqli_query($koneksi_db, "SELECT COUNT(*) FROM PENERIMA"))[0] ?? 0;
 $total_mitra    = mysqli_fetch_row(mysqli_query($koneksi_db, "SELECT COUNT(*) FROM MITRA"))[0] ?? 0;
 $total_paket    = mysqli_fetch_row(mysqli_query($koneksi_db, "SELECT SUM(kuantitas) FROM PAKETBANTUAN"))[0] ?? 0;
 
-// Cek status yang dianggap "Selesai" (Sesuaikan dengan data di database Anda, misal: 'Diterima' atau 'Selesai')
+// Cek status distribusi
 $distribusi_selesai = mysqli_fetch_row(mysqli_query($koneksi_db, "SELECT COUNT(*) FROM DISTRIBUSI WHERE status_pengiriman IN ('Selesai', 'Diterima', 'Terkirim')"))[0] ?? 0;
 $distribusi_proses  = mysqli_fetch_row(mysqli_query($koneksi_db, "SELECT COUNT(*) FROM DISTRIBUSI WHERE status_pengiriman NOT IN ('Selesai', 'Diterima', 'Terkirim')"))[0] ?? 0;
 
@@ -33,12 +32,11 @@ $data_chart = mysqli_query($koneksi_db, "
     GROUP BY bulan
     ORDER BY bulan ASC
     LIMIT 12
-"); // Limit 12 bulan terakhir agar grafik tidak terlalu padat
+");
 
 $bulan = [];
 $jumlah_distribusi = [];
 while ($row = mysqli_fetch_assoc($data_chart)) {
-    // Ubah format 2023-10 menjadi Oktober 2023 (Opsional, pakai format string sederhana dulu)
     $bulan[] = date('M Y', strtotime($row['bulan'])); 
     $jumlah_distribusi[] = $row['total'];
 }
@@ -56,6 +54,10 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
     $label_kategori[] = $row['kategori_penerima'];
     $total_kategori[] = $row['total'];
 }
+
+// 4. Data Stok Gudang
+// Mengambil data item, diurutkan dari stok terkecil (ASC)
+$query_stok = mysqli_query($koneksi_db, "SELECT * FROM ITEM ORDER BY stok_gudang ASC LIMIT 5");
 ?>
 
 <!DOCTYPE html>
@@ -70,37 +72,24 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#137fec",
-                        "background-light": "#f6f7f8",
-                        "background-dark": "#101922",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#137fec",
+                    "background-light": "#f6f7f8",
+                    "background-dark": "#101922",
                 },
+                fontFamily: { "display": ["Inter", "sans-serif"] },
+                borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
             },
-        }
-    </script>
+        },
+    }
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings:
-                'FILL' 0,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 24
-        }
-    </style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
+</style>
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark">
 <div class="relative flex min-h-screen w-full flex-col group/design-root">
@@ -144,6 +133,10 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
             <span class="material-symbols-outlined">description</span>
             <p class="text-sm font-medium">Laporan Data</p>
         </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../item/index.php">
+            <span class="material-symbols-outlined">warehouse</span>
+            <p class="text-sm font-medium">Gudang Item</p>
+        </a>
     </nav>
     <button class="flex items-center justify-center rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 text-sm font-bold">
         <span class="material-symbols-outlined mr-2">logout</span> Logout
@@ -162,50 +155,36 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="flex items-center gap-3 mb-2">
-                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
-                    <span class="material-symbols-outlined">groups</span>
-                </div>
+                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg"><span class="material-symbols-outlined">groups</span></div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Penerima</p>
             </div>
             <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($total_penerima) ?></p>
         </div>
-
         <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="flex items-center gap-3 mb-2">
-                <div class="p-2 bg-purple-100 text-purple-600 rounded-lg">
-                    <span class="material-symbols-outlined">handshake</span>
-                </div>
+                <div class="p-2 bg-purple-100 text-purple-600 rounded-lg"><span class="material-symbols-outlined">handshake</span></div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Mitra</p>
             </div>
             <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($total_mitra) ?></p>
         </div>
-
         <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="flex items-center gap-3 mb-2">
-                <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
-                    <span class="material-symbols-outlined">inventory_2</span>
-                </div>
+                <div class="p-2 bg-amber-100 text-amber-600 rounded-lg"><span class="material-symbols-outlined">inventory_2</span></div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Stok Paket</p>
             </div>
             <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($total_paket) ?></p>
         </div>
-
         <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="flex items-center gap-3 mb-2">
-                <div class="p-2 bg-green-100 text-green-600 rounded-lg">
-                    <span class="material-symbols-outlined">check_circle</span>
-                </div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Distribusi Selesai</p>
+                <div class="p-2 bg-green-100 text-green-600 rounded-lg"><span class="material-symbols-outlined">check_circle</span></div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Selesai</p>
             </div>
             <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($distribusi_selesai) ?></p>
         </div>
-
         <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="flex items-center gap-3 mb-2">
-                <div class="p-2 bg-red-100 text-red-600 rounded-lg">
-                    <span class="material-symbols-outlined">pending</span>
-                </div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Dalam Proses</p>
+                <div class="p-2 bg-red-100 text-red-600 rounded-lg"><span class="material-symbols-outlined">pending</span></div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Proses</p>
             </div>
             <p class="text-2xl font-bold text-gray-900 dark:text-white"><?= number_format($distribusi_proses) ?></p>
         </div>
@@ -214,23 +193,65 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Tren Distribusi Bulanan</h3>
-            <div class="relative h-72 w-full">
-                <canvas id="chartDistribusi"></canvas>
-            </div>
+            <div class="relative h-72 w-full"><canvas id="chartDistribusi"></canvas></div>
         </div>
         
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Kategori Penerima</h3>
-            <div class="relative h-64 w-full flex justify-center">
-                <canvas id="chartKategori"></canvas>
-            </div>
+            <div class="relative h-64 w-full flex justify-center"><canvas id="chartKategori"></canvas></div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">warehouse</span> Laporan Stok Gudang
+            </h3>
+            <a href="../item/index.php" class="text-sm text-primary font-medium hover:underline">Kelola Item</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 font-medium">
+                    <tr>
+                        <th class="px-6 py-4">Nama Barang</th>
+                        <th class="px-6 py-4">Satuan</th>
+                        <th class="px-6 py-4">Stok Tersedia</th>
+                        <th class="px-6 py-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    <?php if(mysqli_num_rows($query_stok) > 0) {
+                        while ($item = mysqli_fetch_assoc($query_stok)) {
+                            $stok = $item['stok_gudang'];
+                            // Logika Warna Badge
+                            if ($stok == 0) {
+                                $status_badge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Habis</span>';
+                            } elseif ($stok < 50) {
+                                $status_badge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Menipis</span>';
+                            } else {
+                                $status_badge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Aman</span>';
+                            }
+                    ?>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white"><?= htmlspecialchars($item['nama_item']) ?></td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400"><?= htmlspecialchars($item['satuan']) ?></td>
+                        <td class="px-6 py-4 font-bold text-gray-700 dark:text-gray-300"><?= number_format($stok) ?></td>
+                        <td class="px-6 py-4"><?= $status_badge ?></td>
+                    </tr>
+                    <?php 
+                        } 
+                    } else { 
+                        echo "<tr><td colspan='4' class='px-6 py-8 text-center text-gray-500'>Belum ada data barang.</td></tr>";
+                    } ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Aktivitas Distribusi Terbaru</h3>
-            <a href="distribusi/index.php" class="text-sm text-primary font-medium hover:underline">Lihat Semua</a>
+            <a href="../distribusi/index.php" class="text-sm text-primary font-medium hover:underline">Lihat Semua</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
@@ -256,7 +277,6 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
                     
                     if(mysqli_num_rows($latest) > 0){
                         while ($row = mysqli_fetch_assoc($latest)) {
-                            // Badge color logic
                             $status = strtolower($row['status_pengiriman']);
                             $badge_class = "bg-gray-100 text-gray-800";
                             if(strpos($status, 'selesai')!==false || strpos($status, 'terkirim')!==false) $badge_class = "bg-green-100 text-green-800";
@@ -291,23 +311,23 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
 </div>
 
 <script>
-    // Konfigurasi Umum agar warna cocok dengan tema
+    // Konfigurasi Chart
     Chart.defaults.font.family = "'Inter', sans-serif";
-    Chart.defaults.color = '#64748b'; // Slate-500
+    Chart.defaults.color = '#64748b'; 
     
-    // 1. Line Chart: Distribusi per Bulan
+    // 1. Line Chart
     const ctxLine = document.getElementById('chartDistribusi').getContext('2d');
     new Chart(ctxLine, {
         type: 'line',
         data: {
-            labels: <?= json_encode($bulan) ?>, // Data PHP
+            labels: <?= json_encode($bulan) ?>,
             datasets: [{
                 label: 'Jumlah Distribusi',
-                data: <?= json_encode($jumlah_distribusi) ?>, // Data PHP
-                borderColor: '#137fec', // Primary Blue
+                data: <?= json_encode($jumlah_distribusi) ?>,
+                borderColor: '#137fec',
                 backgroundColor: 'rgba(19, 127, 236, 0.1)',
                 borderWidth: 2,
-                tension: 0.4, // Kurva halus
+                tension: 0.4,
                 fill: true,
                 pointBackgroundColor: '#fff',
                 pointBorderColor: '#137fec',
@@ -317,36 +337,23 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { borderDash: [2, 4], color: '#e2e8f0' }
-                },
-                x: {
-                    grid: { display: false }
-                }
+                y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#e2e8f0' } },
+                x: { grid: { display: false } }
             }
         }
     });
 
-    // 2. Doughnut Chart: Kategori Penerima
+    // 2. Doughnut Chart
     const ctxPie = document.getElementById('chartKategori').getContext('2d');
     new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-            labels: <?= json_encode($label_kategori) ?>, // Data PHP
+            labels: <?= json_encode($label_kategori) ?>,
             datasets: [{
-                data: <?= json_encode($total_kategori) ?>, // Data PHP
-                backgroundColor: [
-                    '#137fec', // Blue
-                    '#8b5cf6', // Purple
-                    '#f59e0b', // Amber
-                    '#10b981', // Green
-                    '#ef4444', // Red
-                ],
+                data: <?= json_encode($total_kategori) ?>,
+                backgroundColor: ['#137fec', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444'],
                 borderWidth: 0,
                 hoverOffset: 4
             }]
@@ -355,12 +362,9 @@ while ($row = mysqli_fetch_assoc($data_kategori)) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { usePointStyle: true, boxWidth: 8 }
-                }
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
             },
-            cutout: '70%', // Membuat donut lebih tipis
+            cutout: '70%',
         }
     });
 </script>

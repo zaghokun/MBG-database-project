@@ -1,5 +1,5 @@
 <?php
-// 1. Integrasi Koneksi Database
+// 1. Integrasi Koneksi Database & Ambil Data
 include '../config/koneksi.php';
 
 // Fix variabel koneksi
@@ -16,7 +16,7 @@ if (!$koneksi_db) {
 ?>
 
 <!DOCTYPE html>
-<html class="light" lang="id">
+<html class="light" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -95,6 +95,10 @@ if (!$koneksi_db) {
             <span class="material-symbols-outlined">description</span>
             <p class="text-sm font-medium">Laporan Data</p>
         </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../item/index.php">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warehouse</span>
+            <p class="text-sm font-medium">Gudang Item</p>
+        </a>
     </nav>
     <button class="flex items-center justify-center rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 text-sm font-bold">
         <span class="material-symbols-outlined mr-2">logout</span> Logout
@@ -109,10 +113,16 @@ if (!$koneksi_db) {
     <h1 class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">Data Paket Bantuan</h1>
     <p class="text-gray-500 dark:text-gray-400 text-sm">Kelola stok dan jenis bantuan yang tersedia.</p>
 </div>
-<a href="create.php" class="flex items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-<span class="material-symbols-outlined mr-2 text-base">add</span>
-<span class="truncate">Tambah Paket</span>
-</a>
+<div class="flex gap-2">
+    <a href="../item/index.php" class="flex items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-gray-200 text-gray-800 text-sm font-bold hover:bg-gray-300 transition-colors">
+        <span class="material-symbols-outlined mr-2 text-base">warehouse</span>
+        <span class="truncate">Gudang Item</span>
+    </a>
+    <a href="create.php" class="flex items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+        <span class="material-symbols-outlined mr-2 text-base">add</span>
+        <span class="truncate">Tambah Paket</span>
+    </a>
+</div>
 </div>
 
 <?php if (isset($_GET['msg'])) : ?>
@@ -202,7 +212,13 @@ if (mysqli_num_rows($query) > 0) {
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?= htmlspecialchars($row['berat_total']) ?></td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?= htmlspecialchars($row['kadaluarsa']) ?></td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium"><?= htmlspecialchars($row['kuantitas']) ?></td>
-        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+        
+        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
+            
+            <a href="komposisi.php?id=<?= $row['paket_id'] ?>" class="inline-flex p-2 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 transition-colors" title="Atur Isi Paket">
+                <span class="material-symbols-outlined text-base">fact_check</span>
+            </a>
+
             <a href="update.php?id=<?= $row['paket_id'] ?>" class="inline-flex p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors" title="Edit">
                 <span class="material-symbols-outlined text-base">edit</span>
             </a>

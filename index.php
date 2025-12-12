@@ -211,6 +211,15 @@ $stats_pending = ($query_pending) ? mysqli_fetch_assoc($query_pending)['total'] 
         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Admin</h3>
         <p class="text-sm text-slate-600 dark:text-slate-400">Kelola pengguna dan pengaturan sistem.</p>
     </a>
+
+    <a class="group bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all" href="item/index.php">
+        <div class="flex items-center justify-center size-12 rounded-lg bg-slate-100 dark:bg-slate-800 mb-4 text-primary group-hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warehouse</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Gudang Item</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400">Kelola Gudang Item</p>
+    </a>
+
 </div>
 
 </div>

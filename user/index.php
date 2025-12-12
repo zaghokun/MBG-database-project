@@ -97,6 +97,10 @@ if (!$koneksi_db) {
             <span class="material-symbols-outlined">description</span>
             <p class="text-sm font-medium">Laporan Data</p>
         </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800" href="../item/index.php">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warehouse</span>
+            <p class="text-sm font-medium">Gudang Item</p>
+        </a>
     </nav>
     <button class="flex items-center justify-center rounded-lg h-10 px-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 text-sm font-bold">
         <span class="material-symbols-outlined mr-2">logout</span> Logout
